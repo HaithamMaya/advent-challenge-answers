@@ -1,3 +1,7 @@
+highest_value = 0
+highest_value_ever = 0
+
+
 class Register:
     name = None
     value = 0
@@ -10,6 +14,7 @@ class Register:
         self.instruction_history.append(instruction)
         if instruction.condition.check_condition():
             self.value += (instruction.coefficient * instruction.amount)
+        return self.value
 
 
 class Instruction:
@@ -57,10 +62,14 @@ def read_line(line):
     instruction = Instruction(1 if coefficient_name == 'inc' else -1, int(instruction_amount), condition)
     if register_name not in registers:
         registers[register_name] = Register(register_name)
-    registers[register_name].process_instruction(instruction)
+    return registers[register_name].process_instruction(instruction)
 
 
 for line in file:
-    read_line(line)
+    value_calculated = read_line(line)
+    highest_value_ever = max(highest_value_ever, value_calculated)
 
-print('max value:', max(registers.values(), key=lambda x: x.value).value)
+highest_value = max(registers.values(), key=lambda x: x.value).value
+
+print('highest value:', highest_value)
+print('highest value ever:', highest_value_ever)
